@@ -1,6 +1,5 @@
 package com.taps.spray
 
-import cc.spray.utils.Logging
 import cc.spray._
 import http._
 import StatusCodes._
@@ -10,7 +9,8 @@ import MediaTypes._
 import net.liftweb.json.Serialization._
 import typeconversion.LiftJsonSupport
 import net.liftweb.json.DefaultFormats
-import com.mycotrack.api.response.ErrorResponse
+import com.weiglewilczek.slf4s.Logging
+import com.taps.response.ErrorResponse
 
 /**
  * @author chris_carrier

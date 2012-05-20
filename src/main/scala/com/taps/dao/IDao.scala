@@ -2,15 +2,16 @@ package com.taps.dao
 
 import com.mongodb.casbah.Imports._
 import akka.dispatch.Future
-import org.bson.types.ObjectId
-import com.mycotrack.api.model._
-import com.mycotrack.api.mongo.RandomId
 import com.novus.salat._
 import com.novus.salat.global._
 import scala.reflect.Manifest
-import cc.spray.utils.Logging
+import com.taps.mongo.RandomId
+import akka.event.Logging
+import com.taps.model.{UserWrapper, User, BeerWrapper, Beer}
+import akka.actor.ActorSystem
 
-trait MycotrackDao[T <: CaseClass, W <: CaseClass] extends Logging {
+trait TapsDao[T <: CaseClass, W <: CaseClass] {
+  implicit def actorSystem: ActorSystem
   val mongoCollection: MongoCollection
 
   def urlPrefix: String
@@ -68,20 +69,9 @@ trait MycotrackDao[T <: CaseClass, W <: CaseClass] extends Logging {
   }
 }
 
-trait IProjectDao extends MycotrackDao[Project, ProjectWrapper] {
-  def search(searchObj: MongoDBObject): Future[Option[List[Project]]]
-  def getChildren(root: Project): Future[Option[List[Project]]]
+trait BeerService extends TapsDao[Beer, BeerWrapper] {
+  def search(searchObj: MongoDBObject): Future[Option[List[Beer]]]
 }
 
-trait ISpeciesDao extends MycotrackDao[Species, SpeciesWrapper] {
-  def search(searchObj: MongoDBObject): Future[Option[List[Species]]]
-  def getProjectsBySpecies(userUrl: Option[String]): Option[Map[String, List[Project]]];
-}
-
-trait ICultureDao extends MycotrackDao[Culture, CultureWrapper] {
-  def search(searchObj: MongoDBObject, includeProjects: Option[Boolean]): Future[Option[List[Culture]]]
-  def getProjectsByCulture(userUrl: Option[String]): Option[List[Culture]];
-}
-
-trait UserService extends MycotrackDao[User, UserWrapper] {
+trait UserService extends TapsDao[User, UserWrapper] {
 }
