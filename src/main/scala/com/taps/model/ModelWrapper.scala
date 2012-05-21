@@ -19,3 +19,16 @@ case class UserWrapper(_id: Option[String],
                        dateCreated: Date,
                        lastUpdated: Date,
                        content: User)
+
+case class BreweryWrapper(_id: Option[String],
+                       version: Long,
+                       dateCreated: Date,
+                       lastUpdated: Date,
+                       content: Brewery)
+
+case class PlaceWrapper(_id: Option[String],
+                       version: Long,
+                       dateCreated: Date,
+                       lastUpdated: Date,
+                       content: Place)
+

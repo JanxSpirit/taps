@@ -6,28 +6,32 @@ import java.util.Date
 import akka.util.Deadline._
 
 case class Beer(@Ignore id: Option[String],
-                   description: Option[String],
-                   name: Option[String],
-                   userUrl: Option[String],
-		   breweryId: String)
+                    description: Option[String],
+                    name: Option[String],
+                    userUrl: Option[String],
+		    breweryId: String)
 
 case class User(@Ignore id: Option[String], 
-		@Ignore dateCreated: Option[Date], 
-		@Ignore lastUpdated: Option[Date], 
-		email: String, password: String)
+		    @Ignore dateCreated: Option[Date], 
+		    @Ignore lastUpdated: Option[Date], 
+		    email: String, 
+		    password: String,
+		    favBeers: Option[List[String]])
 
 case class Brewery(@Ignore id: Option[String], 
-		   description: Option[String],
-		   name: String,
-		   location: Option[Location],
-		   website: Option[String])
+		    description: Option[String],
+		    name: String,
+		    location: Option[Location],
+		    website: Option[String],
+		    beers: Seq[String])
 
 case class Place(@Ignore id: Option[String], 
-		   description: Option[String],
-		   name: String,
-		   location: Option[Location],
-		   website: Option[String],
-		   beers: Option[Seq[String]])
+		    description: Option[String],
+		    name: String,
+		    location: Option[Location],
+		    website: Option[String],
+		    bottle: Option[Seq[String]],
+		    draft: Option[Seq[String]])
 
 case class Location(city: Option[String],
 		    state: Option[String],
@@ -36,4 +40,3 @@ case class Location(city: Option[String],
 		    zip: Option[Int],
 		    lat: Option[Double],
 		    lon: Option[Double])
-
