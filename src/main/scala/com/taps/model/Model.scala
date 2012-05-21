@@ -16,7 +16,10 @@ case class User(@Ignore id: Option[String],
 		    @Ignore lastUpdated: Option[Date], 
 		    email: String, 
 		    password: String,
-		    favBeers: Option[List[String]])
+		    favBeers: Option[List[String]],
+		    unfavBeers: Option[List[String]],
+		    favBreweries: Option[List[String]],
+		    unfavBreweries: Option[List[String]])
 
 case class Brewery(@Ignore id: Option[String], 
 		    description: Option[String],
@@ -39,4 +42,5 @@ case class Location(city: Option[String],
 		    streetAddress: Option[String],
 		    zip: Option[Int],
 		    lat: Option[Double],
-		    lon: Option[Double])
+		    lon: Option[Double],
+		    latlon: Seq[Double])

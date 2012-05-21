@@ -12,4 +12,9 @@ case class UserSearchParams(email: Option[String],
 case class BrewerySearchParams(name: Option[String],
 			       description: Option[String])
 
-case class PlaceSearchParams(name: Option[String])
+case class PlaceSearchParams(name: Option[String],
+			     nearLoc: Option[NearLocationSearchParams] = None)
+
+case class NearLocationSearchParams(radius: Double,
+				    lat: Double,
+				    lon: Double)

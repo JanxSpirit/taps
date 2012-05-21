@@ -44,7 +44,10 @@ trait PlaceEndpoint extends Directives with LiftJsonSupport with Logging {
   val directGetPlace = get
   val putPlace = content(as[Place]) & put
   val postPlace = path("") & content(as[Place]) & post
-  val indirectGetPlaces = path("") & parameters('name ?) & get
+  val indirectGetPlaces = path("") & parameters('name ?, 
+						'radius ?, 
+						'nearLat ?, 
+						'nearLon ?) & get
 
   val restService = {
     // Debugging: /ping -> pong
@@ -94,7 +97,7 @@ trait PlaceEndpoint extends Directives with LiftJsonSupport with Logging {
 
           } ~
           indirectGetPlaces {
-            (name) => ctx =>
+            (name, radius, nearLat, nearLon) => ctx =>
                 service.search(PlaceSearchParams(name)).onComplete(f => {
                   logger.info("User: " + user.toString)
                   f match {
@@ -102,7 +105,8 @@ trait PlaceEndpoint extends Directives with LiftJsonSupport with Logging {
                       val res: List[Place] = content
                       ctx.complete(res)
                     }
-                    case _ => ctx.fail(StatusCodes.NotFound, ErrorResponse(1, ctx.request.path, List(NOT_FOUND_MESSAGE)))
+                    case _ => ctx.fail(StatusCodes.NotFound, 
+				       ErrorResponse(1, ctx.request.path, List(NOT_FOUND_MESSAGE)))
                   }
                 })
 

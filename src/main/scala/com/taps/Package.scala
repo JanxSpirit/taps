@@ -67,9 +67,12 @@ package object model {
   implicit def placeSearchParams2Dbo(p: PlaceSearchParams): MongoDBObject = {
     val builder = MongoDBObject.newBuilder
     p.name.foreach(xs => builder += "content.name" -> xs)
-    builder.result.asDBObject
-  }
-  
+    p.nearLoc.foreach(loc => builder += "content.location.latlon" -> 
+		      MongoDBObject("$within" -> 
+				    MongoDBObject("$center" -> 
+						  List(List(loc.lat, loc.lon), loc.radius))))
+    builder.result.asDBObject   
+  }  
 }
 
 package object endpoint {
