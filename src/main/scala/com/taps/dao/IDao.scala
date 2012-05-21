@@ -7,7 +7,10 @@ import com.novus.salat.global._
 import scala.reflect.Manifest
 import com.taps.mongo.RandomId
 import akka.event.Logging
-import com.taps.model.{UserWrapper, User, BeerWrapper, Beer, Brewery, BreweryWrapper}
+import com.taps.model.{UserWrapper, User, 
+		       BeerWrapper, Beer, 
+		       Brewery, BreweryWrapper, 
+		       Place, PlaceWrapper}
 import akka.actor.ActorSystem
 
 trait TapsDao[T <: CaseClass, W <: CaseClass] {
@@ -78,4 +81,8 @@ trait UserService extends TapsDao[User, UserWrapper] {
 
 trait BreweryService extends TapsDao[Brewery, BreweryWrapper] {
   def search(searchObj: MongoDBObject): Future[Option[List[Brewery]]]
+}
+
+trait PlaceService extends TapsDao[Place, PlaceWrapper] {
+  def search(searchObj: MongoDBObject): Future[Option[List[Place]]]
 }

@@ -12,19 +12,19 @@ import cc.spray.http.MediaTypes._
 import cc.spray.http.StatusCodes._
 import cc.spray.typeconversion._
 import com.taps.auth.FromMongoUserPassAuthenticator
-import com.taps.dao.BreweryService
-import com.taps.model.{Brewery, BrewerySearchParams, BreweryWrapper}
+import com.taps.dao.PlaceService
+import com.taps.model.{Place, PlaceSearchParams, PlaceWrapper}
 import com.taps.response.ErrorResponse
 import com.weiglewilczek.slf4s.Logging
 import net.liftweb.json.JsonParser._
 import net.liftweb.json.Serialization._
 
-trait BreweryEndpoint extends Directives with LiftJsonSupport with Logging {
+trait PlaceEndpoint extends Directives with LiftJsonSupport with Logging {
 
   //caches
-  lazy val breweryCache: Cache[Either[Set[Rejection], HttpResponse]] = LruCache(100)
+  lazy val placeCache: Cache[Either[Set[Rejection], HttpResponse]] = LruCache(100)
 
-  val service: BreweryService
+  val service: PlaceService
 
   //directive compositions
   val alphanumericMatch = path("^[a-zA-Z0-9]+$".r)
@@ -32,18 +32,19 @@ trait BreweryEndpoint extends Directives with LiftJsonSupport with Logging {
   def withSuccessCallback(ctx: RequestContext, statusCode: StatusCode = OK)(f: Future[_]): Future[_] = {
     f.onComplete(f => {
       f match {
-        case Right(Some(BreweryWrapper(oid, version, dateCreated, lastUpdated, content))) => ctx.complete(statusCode, content.copy(id = oid))
-        case Right(Some(c: Brewery)) => ctx.complete(c)
+        case Right(Some(PlaceWrapper(oid, version, dateCreated, lastUpdated, content))) => 
+	  ctx.complete(statusCode, content.copy(id = oid))
+        case Right(Some(c: Place)) => ctx.complete(c)
         case _ => ctx.fail(StatusCodes.NotFound, 
 			   ErrorResponse(1l, ctx.request.path, List(NOT_FOUND_MESSAGE)))
       }
     })
   }
 
-  val directGetBrewery = get
-  val putBrewery = content(as[Brewery]) & put
-  val postBrewery = path("") & content(as[Brewery]) & post
-  val indirectGetBreweries = path("") & parameters('name ?, 'description ?) & get
+  val directGetPlace = get
+  val putPlace = content(as[Place]) & put
+  val postPlace = path("") & content(as[Place]) & post
+  val indirectGetPlaces = path("") & parameters('name ?) & get
 
   val restService = {
     // Debugging: /ping -> pong
@@ -57,16 +58,16 @@ trait BreweryEndpoint extends Directives with LiftJsonSupport with Logging {
       }
     } ~
       // Service implementation.
-      pathPrefix("breweries") {
+      pathPrefix("places") {
         authenticate(httpMongo(realm = "taps")) { user =>
           alphanumericMatch {
           resourceId =>
-              cacheResults(breweryCache) {
+              cacheResults(placeCache) {
                 respondWithHeader(CustomHeader("TEST", "Awesome")){
-                directGetBrewery {
+                directGetPlace {
                   ctx =>
                         withSuccessCallback(ctx) {
-                          service.get[BreweryWrapper](service.formatKeyAsId(resourceId), user.id)
+                          service.get[PlaceWrapper](service.formatKeyAsId(resourceId), user.id)
                         }
 
                     }
@@ -74,31 +75,31 @@ trait BreweryEndpoint extends Directives with LiftJsonSupport with Logging {
 
 
             } ~
-              putBrewery {
+              putPlace {
                 resource => ctx =>
                       withSuccessCallback(ctx) {
-                        service.update[Brewery, BreweryWrapper](resourceId, resource)
+                        service.update[Place, PlaceWrapper](resourceId, resource)
                       }
 
 
               }
         } ~
-          postBrewery {
+          postPlace {
             resource => ctx =>
                 withSuccessCallback(ctx, Created) {
-                  service.create[BreweryWrapper](resource)
+                  service.create[PlaceWrapper](resource)
                 }
 
 
 
           } ~
-          indirectGetBreweries {
-            (name, description) => ctx =>
-                service.search(BrewerySearchParams(name, description)).onComplete(f => {
+          indirectGetPlaces {
+            (name) => ctx =>
+                service.search(PlaceSearchParams(name)).onComplete(f => {
                   logger.info("User: " + user.toString)
                   f match {
                     case Right(Some(content)) => {
-                      val res: List[Brewery] = content
+                      val res: List[Place] = content
                       ctx.complete(res)
                     }
                     case _ => ctx.fail(StatusCodes.NotFound, ErrorResponse(1, ctx.request.path, List(NOT_FOUND_MESSAGE)))

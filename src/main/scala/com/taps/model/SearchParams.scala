@@ -11,3 +11,5 @@ case class UserSearchParams(email: Option[String],
 
 case class BrewerySearchParams(name: Option[String],
 			       description: Option[String])
+
+case class PlaceSearchParams(name: Option[String])

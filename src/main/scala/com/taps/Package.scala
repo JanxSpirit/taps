@@ -63,6 +63,13 @@ package object model {
     p.description.foreach(xs => builder += "content.description" -> xs)
     builder.result.asDBObject
   }
+
+  implicit def placeSearchParams2Dbo(p: PlaceSearchParams): MongoDBObject = {
+    val builder = MongoDBObject.newBuilder
+    p.name.foreach(xs => builder += "content.name" -> xs)
+    builder.result.asDBObject
+  }
+  
 }
 
 package object endpoint {
