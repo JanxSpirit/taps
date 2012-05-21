@@ -8,29 +8,14 @@ import java.util.Date
  */
 
 
-  case class BeerWrapper(_id: Option[String],
-                         version: Long,
-                         dateCreated: Date,
-                         lastUpdated: Date,
-                         content: Beer)
+case class BeerWrapper(_id: Option[String],
+                       version: Long,
+                       dateCreated: Date,
+                       lastUpdated: Date,
+                       content: Beer)
 
-  object BeerWrapper {
-
-    implicit def wrapper2Beer(wrapper: BeerWrapper): Beer = {
-      wrapper.content.copy(id = wrapper._id)
-    }
-  }
-
-  case class UserWrapper(_id: Option[String],
-                         version: Long,
-                         dateCreated: Date,
-                         lastUpdated: Date,
-                         content: User)
-  object UserWrapper {
-
-    implicit def userWrapper2User(userWrapper: UserWrapper): User = {
-      userWrapper.content.copy(id = userWrapper._id, dateCreated = Some(userWrapper.dateCreated), lastUpdated = Some(userWrapper.lastUpdated))
-    }
-  }
-
-
+case class UserWrapper(_id: Option[String],
+                       version: Long,
+                       dateCreated: Date,
+                       lastUpdated: Date,
+                       content: User)
