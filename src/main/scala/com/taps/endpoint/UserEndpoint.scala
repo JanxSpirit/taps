@@ -55,7 +55,7 @@ trait UserEndpoint extends Directives with LiftJsonSupport with Logging {
     // Debugging: /ping -> pong
     // Service implementation.
     pathPrefix("users") {
-      authenticate(httpMongo(realm = "mycotrack")) { user =>
+      authenticate(httpMongo(realm = "taps")) { user =>
         alphanumericMatch {
         resourceId =>
           get {

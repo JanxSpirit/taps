@@ -76,7 +76,6 @@ trait BeerEndpoint extends Directives with LiftJsonSupport with Logging {
           alphanumericMatch {
           resourceId =>
               cacheResults(beerCache) {
-                respondWithHeader(CustomHeader("TEST", "Awesome")){
                 directGetBeer {
                   ctx =>
                         withSuccessCallback(ctx) {
@@ -84,17 +83,12 @@ trait BeerEndpoint extends Directives with LiftJsonSupport with Logging {
                         }
 
                     }
-                }
-
-
             } ~
               putBeer {
                 resource => ctx =>
                       withSuccessCallback(ctx) {
                         service.update[Beer, BeerWrapper](resourceId, resource)
                       }
-
-
               }
         } ~
           postBeer {

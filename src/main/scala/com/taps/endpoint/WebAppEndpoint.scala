@@ -13,64 +13,44 @@ trait WebAppEndpoint extends Directives with Logging {
 
   logger.info("Starting web ap endpoint.")
 
+  val appPath =  path("") 
+
   val restService = {
-    path("") {
-        cache {
-            getFromResource("bb_mt.html")
-        }
-    } ~
-    path("bb") {
-        cache {
-            getFromResource("bb_index.html")
-        }
-    } ~
-    path("bb_mt") {
-        cache {
-            getFromResource("bb_mt.html")
-        }
-    } ~
-    path("speciesList") {
-        cache {
-            getFromResource("bb_mt.html")
-        }
-    } ~
-    path("cultureList") {
-        cache {
-            getFromResource("bb_mt.html")
-        }
-    } ~
-    pathPrefix("test") {
-        cache {
-            logger.info("test endpoint")
-            //ctx.complete("OK")
-            getFromResourceDirectory("test")
-        }
-    } ~
-    pathPrefix("css") {
-        cache {
-            getFromResourceDirectory("css")
-        }
-    } ~
-    pathPrefix("js") {
-        cache {
-            getFromResourceDirectory("js")
-        }
-    } ~
-    pathPrefix("img") {
-        cache {
-            getFromResourceDirectory("img")
-        }
-    } ~
-    pathPrefix("templates") {
-        cache {
-            getFromResourceDirectory("templates")
-        }
-    } ~
-    path("webAppPing") {
-      get {
-        _.complete("Yo!")
+    appPath {
+      cache {
+        getFromResource("index.html")
       }
-    }
+    } ~
+      pathPrefix("css") {
+        cache {
+          getFromResourceDirectory("assets/css")
+        }
+      } ~
+      pathPrefix("app") {
+        cache {
+          getFromResourceDirectory("app")
+        }
+      } ~
+      pathPrefix("js") {
+        cache {
+          getFromResourceDirectory("assets/js")
+        }
+      } ~
+      pathPrefix("img") {
+        cache {
+          getFromResourceDirectory("assets/img")
+        }
+      } ~
+      pathPrefix("templates") {
+        cache {
+          getFromResourceDirectory("templates")
+        }
+      } ~
+      path("webAppPing") {
+        get {
+          _.complete("Yo!")
+        }
+      }
   }
 
 }

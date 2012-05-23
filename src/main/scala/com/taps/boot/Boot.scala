@@ -68,8 +68,12 @@ object Boot extends App with Logging {
     props = Props(new HttpService(userModule.restService)),
     name = "user-service"
   )
+  val webAppService = system.actorOf(
+    props = Props(new HttpService(webAppModule.restService)),
+    name = "webApp-service"
+  )
   val rootService = system.actorOf(
-    props = Props(new SprayCanRootService(beerService, userService)),
+    props = Props(new SprayCanRootService(beerService, userService, webAppService)),
     name = "root-service"
   )
 
