@@ -27,9 +27,6 @@ function(namespace, jQuery, _, Backbone, ModelBinding, Base64, Taps, Navbar, Bee
   var Router = Backbone.Router.extend({
     initialize: function() {
         namespace.app.user = new User.Model();
-        namespace.app.main = new Backbone.LayoutManager({
-                template: "base"
-        });
 
         namespace.app.loginForm = new Navbar.Views.LoginForm({
             model: namespace.app.user
@@ -39,6 +36,44 @@ function(namespace, jQuery, _, Backbone, ModelBinding, Base64, Taps, Navbar, Bee
             views: {
                 "#loginanchor": namespace.app.loginForm
             }
+        });
+
+        namespace.app.homeView = new BaseView.Home({
+                    views: {
+                    }
+                });
+
+        namespace.app.newUserView = new BaseView.NewUser();
+
+        namespace.app.main = new Backbone.LayoutManager({
+                     template: "base",
+                     views: {
+                         "#tapsnav": namespace.app.navBarView
+                     }
+                   });
+        namespace.app.main.render(function(el) {
+            $("#main").html(el);
+            ModelBinding.bind(namespace.app.loginForm);
+        });
+
+        //global event listeners
+        namespace.app.on('auth:required', function(eventName){
+            console.log('Login necessary!');
+          });
+
+          namespace.app.on('login:submit', function(eventName){
+            namespace.app.user.fetch({
+                success: function(){
+                    $("#loginanchor").detach();
+                },
+                error: function(){
+                    var loginModal = new Login.View({
+                        model: namespace.app.user
+                    });
+                    loginModal.render();
+                    ModelBinding.bind(loginModal);
+                }
+            });
         });
     },
 
@@ -54,6 +89,7 @@ function(namespace, jQuery, _, Backbone, ModelBinding, Base64, Taps, Navbar, Bee
         var beer = new Beer.Collection();
         beer.fetch();
 
+        namespace.app.main.view("#contentAnchor", namespace.app.homeView);
         namespace.app.homeView.render();
     },
 
