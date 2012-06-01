@@ -68,19 +68,14 @@ trait BreweryEndpoint extends Directives with LiftJsonSupport with Logging {
                         withSuccessCallback(ctx) {
                           service.get[BreweryWrapper](service.formatKeyAsId(resourceId), user.id)
                         }
-
                     }
                 }
-
-
             } ~
               putBrewery {
                 resource => ctx =>
                       withSuccessCallback(ctx) {
                         service.update[Brewery, BreweryWrapper](resourceId, resource)
                       }
-
-
               }
         } ~
           postBrewery {
@@ -88,9 +83,6 @@ trait BreweryEndpoint extends Directives with LiftJsonSupport with Logging {
                 withSuccessCallback(ctx, Created) {
                   service.create[BreweryWrapper](resource)
                 }
-
-
-
           } ~
           indirectGetBreweries {
             (name, description) => ctx =>
@@ -104,13 +96,15 @@ trait BreweryEndpoint extends Directives with LiftJsonSupport with Logging {
                     case _ => ctx.fail(StatusCodes.NotFound, ErrorResponse(1, ctx.request.path, List(NOT_FOUND_MESSAGE)))
                   }
                 })
-
-          }
-        }
-
+          /*} ~
+	  pathPrefix("favorites") {
+	    (userName) => ctx =>
+	      service.getFavoritesForUser(userName).onComplete(favs => {
+		
+	      })*/
+	  }
+        } 
       }
-
-
   }
 
   def httpMongo[U](realm: String = "Secured Resource",

@@ -16,10 +16,10 @@ case class User(@Ignore id: Option[String],
 		    @Ignore lastUpdated: Option[Date], 
 		    email: String, 
 		    password: String,
-		    favBeers: Option[List[String]],
-		    unfavBeers: Option[List[String]],
-		    favBreweries: Option[List[String]],
-		    unfavBreweries: Option[List[String]])
+		    favBeers: List[String] = Nil,
+		    unfavBeers: List[String] = Nil,
+		    favBreweries: List[String] = Nil,
+		    unfavBreweries: List[String] = Nil)
 
 case class Brewery(@Ignore id: Option[String], 
 		    description: Option[String],
