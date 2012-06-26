@@ -2,6 +2,8 @@ package com.taps
 
 import akka.util.Deadline._
 import akka.util.Deadline
+import cc.spray.authentication.BasicHttpAuthenticator
+import com.taps.auth.FromMongoUserPassAuthenticator
 import java.util.Date
 import util._
 import net.liftweb.json.{Formats, DefaultFormats}
@@ -101,5 +103,4 @@ package object endpoint {
   final val INTERNAL_ERROR_MESSAGE = "error"
 
   def JsonContent(content: String) = HttpContent(ContentType(`application/json`), content)
-
 }
