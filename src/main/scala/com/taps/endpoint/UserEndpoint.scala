@@ -10,7 +10,7 @@ import MediaTypes._
 import cc.spray.authentication._
 import net.liftweb.json.JsonParser._
 import net.liftweb.json.Serialization._
-import net.liftweb.json.{Formats, DefaultFormats}
+import net.liftweb.json.{ Formats, DefaultFormats }
 import cc.spray._
 import akka.dispatch.Future
 import caching._
@@ -20,19 +20,18 @@ import com.taps.json.ObjectIdSerializer
 import com.taps.dao.UserService
 import com.taps.response.ErrorResponse
 import com.taps.auth.FromMongoUserPassAuthenticator
-import com.taps.model.{UserWrapper, User}
+import com.taps.model.{ UserWrapper, User }
 
 trait UserEndpoint extends Directives with LiftJsonSupport with Logging {
   implicit val liftJsonFormats = DefaultFormats + new ObjectIdSerializer
-
-  final val NOT_FOUND_MESSAGE = "resource.notFound"
-  final val INTERNAL_ERROR_MESSAGE = "error"
-
-  def JsonContent(content: String) = HttpContent(ContentType(`application/json`), content)
-
   val requiredFields = List("name")
-
   val service: UserService
+
+  //directive compositions
+  val alphanumericMatch = path("^[a-zA-Z0-9]+$".r)
+  val putUser = content(as[User]) & put
+  val postUser = path("") & content(as[User]) & post
+  val searchUser = (path("") & get)
 
   def withSuccessCallback(ctx: RequestContext, statusCode: StatusCode = OK)(f: Future[_]): Future[_] = {
     f.onComplete(f => {
@@ -45,53 +44,39 @@ trait UserEndpoint extends Directives with LiftJsonSupport with Logging {
     })
   }
 
-  //directive compositions
-  val alphanumericMatch = path("^[a-zA-Z0-9]+$".r)
-  val putUser = content(as[User]) & put
-  val postUser = path("") & content(as[User]) & post
-  val searchUser = (path("") & get)
+  def httpMongo[U](realm: String = "Secured Resource",
+    authenticator: UserPassAuthenticator[U] = FromMongoUserPassAuthenticator.apply()): BasicHttpAuthenticator[U] =
+    new BasicHttpAuthenticator[U](realm, authenticator)
 
   val restService = {
-    // Debugging: /ping -> pong
     // Service implementation.
     pathPrefix("users") {
       authenticate(httpMongo(realm = "taps")) { user =>
         alphanumericMatch {
-        resourceId =>
-          get {
-            ctx =>
+          resourceId =>
+            get {
+              ctx =>
+                withSuccessCallback(ctx) {
+                  service.getByKey(resourceId)
+                }
+            } ~
+              putUser { resource =>
+                ctx =>
                   withSuccessCallback(ctx) {
-                    service.getByKey(resourceId)
+                    service.update[User, UserWrapper](resourceId, resource)
                   }
-
-          } ~
-            putUser {
-              resource => ctx =>
-                    withSuccessCallback(ctx) {
-                      service.update[User, UserWrapper](resourceId, resource)
-                    }
-
-            }
-      } ~
-        searchUser {
-          _.complete(user)
-        }
-      }~
-        postUser {
-          resource => ctx =>
-              withSuccessCallback(ctx, Created) {
-                service.create[UserWrapper](resource)
               }
-
+        } ~
+          searchUser {
+            _.complete(user)
+          }
+      } ~
+        postUser { resource =>
+          ctx =>
+            withSuccessCallback(ctx, Created) {
+              service.create[UserWrapper](resource)
+            }
         }
-
     }
   }
-
-  def httpMongo[U](realm: String = "Secured Resource",
-                   authenticator: UserPassAuthenticator[U] = FromMongoUserPassAuthenticator.apply())
-  : BasicHttpAuthenticator[U] =
-    new BasicHttpAuthenticator[U](realm, authenticator)
-
-
 }
