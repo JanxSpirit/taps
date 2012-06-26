@@ -32,3 +32,8 @@ case class PlaceWrapper(_id: Option[String],
                        lastUpdated: Date,
                        content: Place)
 
+case class PlaceBeerWrapper(_id: Option[String],
+			    version: Long,
+			    dateCreated: Date,
+			    lastUpdated: Date,
+			    content: PlaceBeer)

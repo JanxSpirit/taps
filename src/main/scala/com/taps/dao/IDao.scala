@@ -4,6 +4,9 @@ import com.mongodb.casbah.Imports._
 import akka.dispatch.Future
 import com.novus.salat._
 import com.novus.salat.global._
+import com.taps.model.PlaceBeer
+import com.taps.model.PlaceBeerWrapper
+import com.taps.model.PlaceWrapper
 import scala.reflect.Manifest
 import com.taps.mongo.RandomId
 import akka.event.Logging
@@ -86,3 +89,5 @@ trait BreweryService extends TapsDao[Brewery, BreweryWrapper] {
 trait PlaceService extends TapsDao[Place, PlaceWrapper] {
   def search(searchObj: MongoDBObject): Future[Option[List[Place]]]
 }
+
+trait PlaceBeerService extends TapsDao[PlaceBeer, PlaceBeerWrapper]

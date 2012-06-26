@@ -13,6 +13,7 @@ import cc.spray.http.StatusCodes._
 import cc.spray.typeconversion._
 import com.taps.auth.FromMongoUserPassAuthenticator
 import com.taps.dao.PlaceService
+import com.taps.model.PlaceBeer
 import com.taps.model.{Place, PlaceSearchParams, PlaceWrapper}
 import com.taps.response.ErrorResponse
 import com.weiglewilczek.slf4s.Logging
@@ -48,6 +49,7 @@ trait PlaceEndpoint extends Directives with LiftJsonSupport with Logging {
 						'radius ?, 
 						'nearLat ?, 
 						'nearLon ?) & get
+  val postPlaceBeer = alphanumericMatch & path("beers") & content(as[PlaceBeer]) & post
 
   val restService = {
     // Debugging: /ping -> pong
@@ -80,12 +82,33 @@ trait PlaceEndpoint extends Directives with LiftJsonSupport with Logging {
             } ~
               putPlace {
                 resource => ctx =>
-                      withSuccessCallback(ctx) {
-                        service.update[Place, PlaceWrapper](resourceId, resource)
-                      }
+                  withSuccessCallback(ctx) {
+                    service.update[Place, PlaceWrapper](resourceId, resource)
+                  }
 
 
-              }
+              } ~
+		postPlaceBeer {
+		  (placeId, placeBeer) => ctx =>
+		    ctx.complete("palceId = %s; placeBeer = %s".format(placeId, placeBeer))
+		}
+
+
+
+	    /*   
+	      path("beers") & content(as[PlaceBeer]) & post {
+		resource => ctx => {
+		  ctx.complete("Result")
+		}
+	      }	~
+		putPlaceBeer {
+		  alphanumericMatch {
+		  resource => ctx => beerId =>
+		    withSuccessCallback(ctx) {
+		      ctx.complete("Result")
+		    }
+		  }
+		} */
         } ~
           postPlace {
             resource => ctx =>
@@ -112,10 +135,7 @@ trait PlaceEndpoint extends Directives with LiftJsonSupport with Logging {
 
           }
         }
-
-      }
-
-
+      } 
   }
 
   def httpMongo[U](realm: String = "Secured Resource",

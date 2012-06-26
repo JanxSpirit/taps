@@ -16,6 +16,11 @@ package object util {
 }
 
 package object model {
+  val TAP_FORMAT = "tap"
+  val BOTTLE_FORMAT = "bottle"
+  val CAN_FORMAT = "can"
+  val NONE_FORMAT = "none"
+
   implicit def user2Wrapper(user: User): UserWrapper = 
     UserWrapper(user.id, 1, now, now, user)
 
@@ -41,7 +46,13 @@ package object model {
 
   implicit def wrapper2Place(wrapper: PlaceWrapper): Place = 
     wrapper.content.copy(id = wrapper._id)
-  
+
+  implicit def placeBeer2Wrapper(placeBeer: PlaceBeer): PlaceBeerWrapper = 
+    PlaceBeerWrapper(Some(buildPlaceBeerId(placeBeer.placeId, 
+				      placeBeer.beerId, 
+				      placeBeer.format.getOrElse(NONE_FORMAT))), 
+		     1, now, now, placeBeer)
+
   implicit def beerSearchParams2Dbo(p: BeerSearchParams): MongoDBObject = {
     val query = MongoDBObject()
     p.name.foreach(xs => query += "content.name" -> xs)
@@ -73,6 +84,14 @@ package object model {
 						  List(List(loc.lat, loc.lon), loc.radius))))
     builder.result.asDBObject   
   }  
+
+  def buildPlaceBeerId(placeId: String, beerId: String, format: String): String = 
+    "%s-%s-%s".format(placeId, beerId, format)
+  
+  def parsePlaceBeerId(id: String): (String, String, String) = id.split("-") match { 
+    case Array(p, b, f) => (p, b, f)
+    case  _ => throw new IllegalArgumentException("Id must be of the form placeId-beerId-form")
+  }
 }
 
 package object endpoint {
