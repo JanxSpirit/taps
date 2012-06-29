@@ -1,4 +1,4 @@
-package com.taps.endpoint
+package com.taps.resource
 
 import org.bson.types.ObjectId
 import cc.spray.http._
@@ -22,7 +22,7 @@ import com.taps.response.ErrorResponse
 import com.taps.auth.FromMongoUserPassAuthenticator
 import com.taps.model.{ UserWrapper, User }
 
-trait UserEndpoint extends Directives with LiftJsonSupport with Logging {
+trait UserResource extends Directives with LiftJsonSupport with Logging {
   implicit val liftJsonFormats = DefaultFormats + new ObjectIdSerializer
   val requiredFields = List("name")
   val service: UserService

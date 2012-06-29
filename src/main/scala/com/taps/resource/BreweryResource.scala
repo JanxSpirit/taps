@@ -1,4 +1,4 @@
-package com.taps.endpoint
+package com.taps.resource
 
 import akka.dispatch.Future
 import cc.spray._
@@ -21,7 +21,7 @@ import net.liftweb.json.Serialization._
 import net.liftweb.json.{ Formats, DefaultFormats }
 import com.taps.json.ObjectIdSerializer
 
-trait BreweryEndpoint extends Directives with LiftJsonSupport with Logging {
+trait BreweryResource extends Directives with LiftJsonSupport with Logging {
   implicit val liftJsonFormats = DefaultFormats + new ObjectIdSerializer
   val service: BreweryService
 

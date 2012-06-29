@@ -4,7 +4,7 @@ import cc.spray.io.IoWorker
 import cc.spray.{SprayCanRootService, HttpService, RootService}
 import util.Properties
 import com.taps.mongo.MongoSettings
-import com.taps.endpoint.{WebAppEndpoint, UserEndpoint, BeerEndpoint}
+import com.taps.resource.{WebAppResource, UserResource, BeerResource}
 import com.taps.dao.{UserDao, BeerDao}
 import cc.spray.can.server.HttpServer
 import cc.spray.io.pipelines.MessageHandlerDispatch
@@ -12,8 +12,7 @@ import akka.actor.{ActorSystem, Props}
 import com.weiglewilczek.slf4s.Logging
 import com.typesafe.config.ConfigFactory
 
-/**
- * @author chris_carrier
+/** @author chris_carrier
  */
 
 object Boot extends App with Logging {
@@ -33,8 +32,6 @@ object Boot extends App with Logging {
   val beerCollection = akkaConfig.getString("taps.beer.collection")
   val userCollection = akkaConfig.getString("taps.user.collection")
 
-//  val urlList = mongoUrl.split(",").toList.map(new ServerAddress(_))
-
   val MongoSettings(db) = Properties.envOrNone("MONGOHQ_URL")
 
   val beerDao = new BeerDao {
@@ -48,15 +45,16 @@ object Boot extends App with Logging {
 
   // ///////////// INDEXES for collections go here (include all lookup fields)
   //  configsCollection.ensureIndex(MongoDBObject("customerId" -> 1), "idx_customerId")
-  val beerModule = new BeerEndpoint {
+
+  val beerModule = new BeerResource {
     implicit def actorSystem = system
     val service = beerDao
   }
-  val userModule = new UserEndpoint {
+  val userModule = new UserResource {
     implicit def actorSystem = system
     val service = userDao
   }
-  val webAppModule = new WebAppEndpoint {
+  val webAppModule = new WebAppResource {
     implicit def actorSystem = system
   }
 

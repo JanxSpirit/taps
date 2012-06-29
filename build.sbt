@@ -57,7 +57,9 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2" % "1.5" % "test",
   "org.specs2" % "specs2-scalaz-core_2.9.0-1" % "6.0.RC2" % "test",
   // Dispatch
-  "net.databinder" %% "dispatch-http" % "0.8.6"
+  "net.databinder" %% "dispatch-http" % "0.8.6",
+  //CONFIG
+  "com.typesafe" % "config" % "0.4.1"
 )
 
 resolvers ++= Seq(

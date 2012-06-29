@@ -96,7 +96,7 @@ package object model {
   }
 }
 
-package object endpoint {
+package object resource {
   implicit val liftJsonFormats = DefaultFormats + new ObjectIdSerializer
 
   final val NOT_FOUND_MESSAGE = "resource.notFound"

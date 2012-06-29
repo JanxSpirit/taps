@@ -1,4 +1,4 @@
-package com.taps.endpoint
+package com.taps.resource
 
 import cc.spray.Directives
 import com.weiglewilczek.slf4s.Logging
@@ -9,7 +9,7 @@ import com.weiglewilczek.slf4s.Logging
  */
 
 
-trait WebAppEndpoint extends Directives with Logging {
+trait WebAppResource extends Directives with Logging {
 
   logger.info("Starting web ap endpoint.")
 

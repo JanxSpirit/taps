@@ -1,4 +1,4 @@
-package com.taps.endpoint
+package com.taps.resource
 
 import org.bson.types.ObjectId
 import cc.spray.http._
@@ -26,7 +26,7 @@ import com.taps.json.ObjectIdSerializer
  * @author chris carrier
  */
 
-trait BeerEndpoint extends Directives with LiftJsonSupport with Logging {
+trait BeerResource extends Directives with LiftJsonSupport with Logging {
   implicit val liftJsonFormats = DefaultFormats + new ObjectIdSerializer
   val requiredFields = List("name", "description")
   val service: BeerService

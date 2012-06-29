@@ -1,4 +1,4 @@
-package com.taps.endpoint
+package com.taps.resource
 
 import akka.dispatch.Future
 import cc.spray._
@@ -22,7 +22,7 @@ import net.liftweb.json.JsonParser._
 import net.liftweb.json.Serialization._
 import net.liftweb.json.{ Formats, DefaultFormats }
 
-trait PlaceEndpoint extends Directives with LiftJsonSupport with Logging {
+trait PlaceResource extends Directives with LiftJsonSupport with Logging {
   implicit val liftJsonFormats = DefaultFormats + new ObjectIdSerializer
   val service: PlaceService
 
