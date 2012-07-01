@@ -19,18 +19,18 @@ object Boot extends App with Logging {
 
   logger.info("Running Boot")
 
-  val system = ActorSystem("demo")
+  val system = ActorSystem("taps")
 
-  val akkaConfig = ConfigFactory.load()
+  val config = ConfigFactory.load()
 
   val host = "0.0.0.0"
-  val port = Option(System.getenv("PORT")).getOrElse("8080").toInt
+  val port = config.getInt("spray-can.server.port")
 
-  val mongoUrl = akkaConfig.getString("mongodb.url")
-  val mongoDbName = akkaConfig.getString("mongodb.database")
+  val mongoUrl = config.getString("mongodb.url")
+  val mongoDbName = config.getString("mongodb.database")
 
-  val beerCollection = akkaConfig.getString("taps.beer.collection")
-  val userCollection = akkaConfig.getString("taps.user.collection")
+  val beerCollection = config.getString("taps.beer.collection")
+  val userCollection = config.getString("taps.user.collection")
 
   val MongoSettings(db) = Properties.envOrNone("MONGOHQ_URL")
 

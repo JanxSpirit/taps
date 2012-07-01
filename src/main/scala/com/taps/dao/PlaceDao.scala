@@ -9,7 +9,7 @@ import com.taps.model.{PlaceWrapper, Place}
 
 trait PlaceDao extends PlaceService {
 
-  val mongoCollection: MongoCollection
+  def mongoCollection: MongoCollection
 
   def urlPrefix = "/places/"
 

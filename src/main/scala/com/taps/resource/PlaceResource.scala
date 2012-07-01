@@ -19,12 +19,14 @@ import com.taps.json.ObjectIdSerializer
 import com.taps.response.ErrorResponse
 import com.weiglewilczek.slf4s.Logging
 import net.liftweb.json.JsonParser._
+import net.liftweb.json.NoTypeHints
+import net.liftweb.json.Serialization
 import net.liftweb.json.Serialization._
 import net.liftweb.json.{ Formats, DefaultFormats }
 
 trait PlaceResource extends Directives with LiftJsonSupport with Logging {
   implicit val liftJsonFormats = DefaultFormats + new ObjectIdSerializer
-  val service: PlaceService
+  def service: PlaceService
 
   //caches
   lazy val placeCache: Cache[Either[Set[Rejection], HttpResponse]] = LruCache(100)

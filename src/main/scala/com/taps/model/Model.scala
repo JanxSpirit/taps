@@ -43,7 +43,7 @@ case class Location(city: Option[String],
 		    zip: Option[Int],
 		    lat: Option[Double],
 		    lon: Option[Double],
-		    latlon: Seq[Double])
+		    latlon: Option[(Double,Double)])
 
 case class PlaceBeer(@Ignore beerId: String,
 		     @Ignore placeId: String,

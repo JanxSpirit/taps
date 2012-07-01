@@ -18,7 +18,7 @@ import akka.actor.ActorSystem
 
 trait TapsDao[T <: CaseClass, W <: CaseClass] {
   implicit def actorSystem: ActorSystem
-  val mongoCollection: MongoCollection
+  def mongoCollection: MongoCollection
 
   def urlPrefix: String
   def formatKeyAsId(s: String): String = {
