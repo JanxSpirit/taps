@@ -27,6 +27,12 @@ class PlaceResourceSpec extends Specification
   }
 
   "The Place resource" should {
+    "GET places" in {
+      testService(HttpRequest(method=GET,
+			      uri=resourceName)) {
+	restService
+      }.response.status mustEqual 200
+    }
     "save a place" in {
       testService(HttpRequest(method=POST, 
 			      uri=resourceName,

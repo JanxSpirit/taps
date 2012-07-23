@@ -61,6 +61,9 @@ trait PlaceResource extends Directives with LiftJsonSupport with Logging {
   val restService = {
     // Service implementation.
     pathPrefix("places") {
+      get { ctx =>
+	ctx.complete("Places!")
+      } ~
       authenticate(httpMongo(realm = "taps")) { user =>
         alphanumericMatch { resourceId =>
           cacheResults(placeCache) {
